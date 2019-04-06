@@ -5,6 +5,7 @@ echo 1. yes
 echo 2. no
 echo.
 set /P sub=enter your choice: 
+echo.
 IF %sub% EQU 1 goto continue
 IF %sub% EQU 2 goto continue
 cls
@@ -14,6 +15,28 @@ cls
 goto sub
 
 :continue:
+echo only scan file with a specific extension?
+echo 1. yes
+echo 2. no
+echo.
+set /P extchoose=enter your choice: 
+IF %extchoose% EQU 1 goto chooseext
+IF %extchoose% EQU 2 set choice=& goto continue2
+cls
+echo invalid value :/
+Timeout /T 3 /NOBREAK > NUL
+cls
+goto continue
+exit
+
+:chooseext:
+echo.
+Set /P ext=scan file with what extension? 
+if NOT %ext:~0,1% EQU . set ext=.%ext%
+goto continue2
+exit
+
+:continue2:
 echo.
 set /P path=path to the folder to scan: 
 echo.
@@ -30,7 +53,7 @@ echo you shouldn't be reading this :/
 pause
 exit
 :withoutsub:
-for %%F in (*.txt) do (
+for %%F in (*%ext%) do (
     echo checking %%F
     FOR %%I in (%%F) do if %%~zI GEQ %maxsize% echo %%F>>"%pathsize%\size.txt"
 )
@@ -40,7 +63,7 @@ pause > NUL
 exit
 
 :withsub:
-for /R %%F in (*.txt) do (
+for /R %%F in (*%ext%) do (
     echo checking %%~nF%%~xF
     FOR %%I in (%%~nF%%~xF) do if %%~zI GEQ %maxsize% echo %%F>>"%pathsize%\size.txt"
 )
